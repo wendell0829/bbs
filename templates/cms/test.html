@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试页面</title>
+    <script src="{{ url_for('static', filename='cms/js/test.js') }}"></script>
+    <script>
+        function color_change() {
+            var x = document.getElementById('test');
+            if (x.style.color == 'red') {
+                x.style.color = 'blue'
+            }
+            else {
+                x.style.color = 'red'
+            }
+            x.innerText = '这回信了吧'
+        }
+
+        function text_change() {
+            var ahead = '好吧好吧: '
+            var x = document.getElementById('text_input').value;
+            document.getElementById('original_text').innerHTML = ahead + x
+        }
+
+        function show() {
+            var x = document.getElementById('other').getElementsByTagName('p');
+            for (var i = 0; i < x.length; i++) {
+                x[i].style.visibility = 'visible';
+            }
+        }
+    </script>
+    <script src="https://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#hide').click(function () {
+                $('p').hide()
+            })
+        })
+
+    </script>
+</head>
+<body>
+<div style="border-radius: 2px; border: solid">
+    <h1>这是标题</h1>
+</div>
+<h1>这是标题</h1>
+<p>这是测试页面</p>
+<div id="test">
+    <p>我会变色你信不信</p>
+</div>
+<input type="button" value="变一个试试" onclick="color_change()">
+
+<div id="text">
+    <p id="original_text">你说我变成什么好</p>
+    <span>你给我变成：</span><input type="text" id="text_input">
+    <input type="submit" value="就它吧" onclick="text_change()">
+</div>
+
+<div id="other">
+    <button onclick="show()">这是什么？</button>
+    <p style="visibility: hidden">你竟然找到了我们</p>
+    <p style="visibility: hidden">你竟然找到了我们</p>
+    <p style="visibility: hidden">你竟然找到了我们</p>
+    <p style="visibility: hidden">你竟然找到了我们</p>
+    <p style="visibility: hidden">你竟然找到了我们</p>
+</div>
+<button id="hide">全都给我消失吧！</button>
+</body>
+</html>

@@ -1,3 +1,6 @@
+'''
+该文件为cms用户模型, 通过sqlachemy映射至sql数据库中
+'''
 from exts import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -55,6 +58,7 @@ class CMSRole(db.Model):
 
 class CMSUser(db.Model):
     '''
+    cms用户模型
     id: 自增整数
     name: 用户名
     _password: 密码, 为了保证安全, 数据库中不存储原始密码, 使用hash加密后存储
@@ -72,18 +76,21 @@ class CMSUser(db.Model):
     email = db.Column(db.String(30), unique=True)
     join_time = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, name, password, phone):
+    def __init__(self, name, password, phone, email=None):
         self.name = name
         self.phone = phone
         self.password = password
+        self.email = email
 
 
     @property
     def password(self):
+        # 通过property将password转化为方法, 以便进行操作后再存储
         return self._password
 
     @password.setter
     def password(self, raw_password):
+        # setter装饰器可以在创建类时取代init
         self._password = generate_password_hash(raw_password)
 
     def check_password(self, raw_password):
@@ -92,6 +99,10 @@ class CMSUser(db.Model):
 
     @property
     def authority(self):
+        '''
+        设置用户权限, 根据用户拥有的角色, 将每个角色的权限取并集
+        :return:
+        '''
         authority = 0
         if self.roles:
             for a in self.roles:
@@ -99,5 +110,6 @@ class CMSUser(db.Model):
         return authority
 
     def check_authority(self, authority):
+        # 验证用户是否拥有某个权限, 通过取并的方式, 若拥有, 则取并后应不变
         return self.authority&authority == authority
 

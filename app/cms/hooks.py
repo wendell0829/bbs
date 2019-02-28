@@ -1,9 +1,14 @@
+'''
+该文件为一些钩子函数, 利用g函数传递一些参数
+'''
 from .views import bp, session, g
 from .utils import search_user_of_id
+from .models import CMSAuthority
 import config
 
 @bp.before_request
 def current_user_for_views():
+    # 请求开始前, 将当前用户绑定到g函数上, 以便视图函数中使用
     id = session.get(config.CURRENT_USER_ID)
     if id:
         user = search_user_of_id(id)
@@ -12,10 +17,17 @@ def current_user_for_views():
 
 @bp.context_processor
 def current_user_for_html():
+    # 模板渲染前, 将g函数上的用户传入模板中, 以便在html中使用
     if hasattr(g, 'user'):
         return {'current_user': g.user}
     else:
         return {}
+
+
+@bp.context_processor
+def authority_for_html():
+    # 模板渲染前, 将权限模型传入模板, 以便在前端页面进行权限验证
+    return {'authority' : CMSAuthority}
 
 
 

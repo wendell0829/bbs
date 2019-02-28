@@ -1,3 +1,6 @@
+'''
+该文件为cms界面的表单验证代码
+'''
 from ..forms import BaseForm
 from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired, Length, Regexp, EqualTo, Email, ValidationError
@@ -6,6 +9,9 @@ from utils import cache
 
 
 class LoginForm(BaseForm):
+    '''
+
+    '''
     phone_rule = r'1[3-9]\d{9}'
     phone = StringField(validators=[DataRequired(message='请输入手机号码！'),
                                     Regexp(phone_rule, message='手机号码格式不正确！')])

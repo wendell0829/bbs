@@ -7,3 +7,11 @@
 {% block page_title %}
     欢迎来到CMS管理系统
 {% endblock %}
+
+{% block main_content %}
+    {% if noauthority %}
+        <script>
+            alert('无相关权限!');
+        </script>
+    {% endif %}
+{% endblock %}

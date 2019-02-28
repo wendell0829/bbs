@@ -7,6 +7,10 @@ from exts import db, mail
 from flask_wtf import CSRFProtect
 
 def create_app():
+    '''
+    创建一个flaks实例，导入相关配置，注册蓝图，绑定到db、mail等库，开启CSRF保护
+    :return:
+    '''
     app = Flask(__name__)
     app.config.from_object(config)
 

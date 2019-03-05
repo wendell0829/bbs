@@ -25,7 +25,7 @@ $(function () {
                 // code==200
                 // code != 200
                 var message = data['message'];
-                if (data['code'] == 200) {
+                if (data['code'] === 200) {
                     myalert.alertSuccessToast(message);
                     emailE.val(email);
                     captchaE.val("");

@@ -12,7 +12,7 @@ class LoginForm(BaseForm):
     '''
 
     '''
-    phone_rule = r'1[3-9]\d{9}'
+    phone_rule = r'^1[3-9]\d{9}$'
     phone = StringField(validators=[DataRequired(message='请输入手机号码！'),
                                     Regexp(phone_rule, message='手机号码格式不正确！')])
     password = StringField(validators=[DataRequired(message='请输入密码！'),

@@ -1,26 +1,33 @@
 1.5be4:
 创建： cms_user表
 更改： 无
-添加： 无
 删除： 无
 
 2.f863
-创建：无
+创建：cms_user表email字段
 更改：jointime  ——》 join_time
-添加：email字段
 删除：无
 
 3.120d
 创建：cms_role表（角色模型， 与user表为多对多关系）， cms_role_user表（role与user的中间表）
 更改：无
-添加：无
 删除：无
 
 4.3d58
 创建：无
 更改：cms_role.authorities  --> authority
-添加：无
 删除：无
 
+
+5.93d6
+创建：front_user表
+更改：无
+删除：无
+
+
+6.d6ab
+创建：无
+更改：phone --> mobile
+删除：无
 
 

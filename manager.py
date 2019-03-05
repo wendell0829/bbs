@@ -9,10 +9,13 @@ from flask_migrate import Migrate, MigrateCommand
 from main import create_app
 from exts import db
 from app.cms import models as cms_models
+from app.front import models as front_models
+
 
 CMSUser = cms_models.CMSUser
 CMSRole = cms_models.CMSRole
 CMSAuthority = cms_models.CMSAuthority
+FrontUser = front_models.FrontUser
 
 app = create_app()
 
@@ -40,6 +43,17 @@ def add_cms_user(name, password, phone, email):
     db.session.add(user)
     db.session.commit()
     print('cms用户添加成功！')
+
+
+@manager.option('-u', '--username', dest='username')
+@manager.option('-p', '--password', dest='password')
+@manager.option('-m', '--mobile', dest='mobile')
+def add_front_user(username, password, mobile):
+    user = FrontUser(username=username, password=password, mobile=mobile)
+
+    db.session.add(user)
+    db.session.commit()
+    print('前台用户添加成功!')
 
 
 @manager.command

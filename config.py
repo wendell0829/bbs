@@ -36,3 +36,9 @@ MAIL_DEFAULT_SENDER = '15832217331@163.com'
 
 # memcached端口配置
 MEMCACHED_PORT = ['127.0.0.1:11211']
+
+#短信发送端口配置
+# 来源： 聚合数据
+URL = "http://v.juhe.cn/sms/send"
+TPL_ID = "139180"
+APP_KEY = "2865efa1d531cb7d4d89ae01e35b5d22"

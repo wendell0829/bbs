@@ -9,14 +9,14 @@ from exts import Message
 import random
 
 
-def login_check(phone, password):
+def login_check(email, password):
     '''
     登录验证
-    :param phone: 用户手机号
+    :param email: 用户邮箱
     :param password: 用户密码
     :return: 用户名和密码匹配则返回用户作为当前用户, 不一致则返回相应的错误信息
     '''
-    user = db.session.query(CMSUser).filter_by(phone=phone).one_or_none()
+    user = db.session.query(CMSUser).filter_by(email=email).one_or_none()
     if user:
         if user.check_password(raw_password=password):
             return None, user
@@ -35,7 +35,7 @@ def login_required(func):
     '''
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if session.get(config.CURRENT_USER_ID):
+        if session.get(config.CURRENT_CMS_USER_ID):
             return func(*args, **kwargs)
         else:
             return redirect(url_for('cms.login', onlogin=True))
@@ -53,7 +53,7 @@ def authority_required(authority):
     def outer(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if g.user.check_authority(authority):
+            if g.cuser.check_authority(authority):
                 return func(*args, **kwargs)
             else:
                 return redirect(url_for('cms.home', noauthority=True))
@@ -61,7 +61,7 @@ def authority_required(authority):
     return outer
 
 
-def search_user_of_id(id):
+def search_user_by_id(id):
     user = db.session.query(CMSUser).filter_by(id=id).one()
     return user
 

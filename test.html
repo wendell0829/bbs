@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+             $('#test-btn').click(function (event) {
+                event.preventDefault();
+                swal({
+                    "title": "注册成功",
+                    "text": "即将跳转",
+                    "type": 'success',
+                }, function (isconfirm) {
+                    if(isconfirm){
+                        location.href = 'http://www.baidu.com'
+                    }else{
+                        location.href = '/'
+                    }
+                })
+            });
+            $('#test-btn-2').click(function (event) {
+                event.preventDefault();
+                alert('asdfa');
+                location.href = 'http://www.baidu.com'
+            })
+        })
+    </script>
+</head>
+<body>
+<h1>这是测试页面</h1>
+<button id="test-btn">测试按钮</button>
+<button id="test-btn-2">测试按钮2</button>
+</body>
+</html>

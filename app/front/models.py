@@ -3,6 +3,7 @@ from datetime import datetime
 import enum
 import shortuuid
 from werkzeug.security import generate_password_hash, check_password_hash
+from config import DEFAULT_AVATAR
 
 
 class GenderEnum(enum.Enum):
@@ -16,12 +17,12 @@ class FrontUser(db.Model):
     __tablename__ = 'front_user'
 
     id = db.Column(db.String(25), primary_key=True, unique=True, default=shortuuid.uuid)
-    username = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(20), nullable=False)
     _password = db.Column(db.String(200), nullable=False)
     mobile = db.Column(db.String(15), nullable=False, unique=True)
     email = db.Column(db.String(30), unique=True)
     gender = db.Column(db.Enum(GenderEnum), default=GenderEnum.UNKNOWN)
-    avatar = db.Column(db.String(50))
+    avatar = db.Column(db.String(150), default=DEFAULT_AVATAR)
     signature = db.Column(db.String(50))
     realname = db.Column(db.String(10))
     join_time = db.Column(db.DateTime, default=datetime.now)

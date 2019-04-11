@@ -1,0 +1,49 @@
+body {
+    background-color: #494f60;
+}
+
+.out-box {
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 40px;
+    overflow: hidden;
+    width: 500px;
+}
+
+.logo-box {
+    text-align: center;
+    padding-top: 50px;
+}
+
+.form-box {
+    margin: 0 auto;
+    width: 300px;
+    padding-top: 50px;
+}
+
+.page-title {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.signin-btn {
+    margin-left: 78px;
+    width: 140px;
+}
+
+.signup-btn{
+    margin-left: 58px;
+    width: 160px;
+}
+
+.img-captcha-img {
+    height: 32px;
+    width: 94px;
+    cursor: pointer;
+}
+
+.img-captcha-addon {
+    overflow: hidden;
+    padding: 0;
+}

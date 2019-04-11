@@ -1,0 +1,26 @@
+{% from "common/macros.html" import static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'common/_heads.html' %}
+    <title>
+        {% block title %}{% endblock %}
+    </title>
+    <script src="{{ static("common/js/add_params.js") }}"></script>
+    <link rel="stylesheet" href="{{ static("front/css/signbase.css") }}">
+    {% block heads %}{% endblock %}
+</head>
+
+ <body>
+    <div class="out-box">
+        <div class="logo-box">
+            <img src="https://v3.bootcss.com/favicon.ico" alt="" class="logo-img">
+        </div>
+        <h2 class="page-title">
+             {% block h2_title %}{% endblock %}
+        </h2>
+        <div class="signbox">
+            {% block signbox %}{% endblock %}
+        </div>
+    </div>
+ </body>

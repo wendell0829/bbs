@@ -1,0 +1,85 @@
+{% extends 'front/base.html' %}
+{% from "common/macros.html" import static %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block head %}
+    <script src="{{ static('ueditor/ueditor.config.js') }}"></script>
+    <script src="{{ static('ueditor/ueditor.all.min.js') }}"></script>
+    <script src="{{ static('front/js/post_detail.js') }}"></script>
+    <link rel="stylesheet" href="{{ static('front/css/post_detail.css') }}">
+    <style>
+        .add-comment-group script{
+            height: 100px;
+        }
+        .author-info.author-name{
+            padding-top: 10px;
+        }
+        .author-info p{
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="left-container">
+        <div class="post-container">
+            <h2>{{ post.title }}</h2>
+            <p class="post-info-group">
+                <span>发表时间：{{ post.create_time }}</span>
+                <span>作者：{{ post.author.name }}</span>
+                <span>所属板块：{{ post.board.name }}</span>
+{#                <span>阅读数：{{ post.read_count }}</span>#}
+{#                <span>评论数：0</span>#}
+            </p>
+            <article class="post-content" id="post-content" data-id="{{ post.id }}">
+                {{ post.content|safe }}
+            </article>
+        </div>
+        <div class="like">
+            {% if current_fuser.id in liker_ids %}
+                <button class="btn btn-default" id="like-btn" >已点赞{{ post.like_records | length }}</button>
+            {% else %}
+                <button class="btn btn-warning" id="like-btn" >点赞{{ post.like_records | length }}</button>
+            {% endif %}
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">评论列表</div>
+            <ul class="list-group">
+                {% for comment in post.comments %}
+                <li class="list-group-item">
+                    <p class="comment-info">
+                        <span>{{ comment.author.name }}</span>
+                        <span>{{ comment.create_time }}</span>
+                    </p>
+                    <p class="comment-content">
+                        <span>{{ comment.content | safe }}</span>
+                    </p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="add-comment-group">
+            <h3>发表评论</h3>
+            <script id="editor" type="text/plain"></script>
+            <div class="comment-btn-group">
+                <button class="btn btn-primary" id="comment-btn">发表评论</button>
+            </div>
+        </div>
+    </div>
+    <div class="right-container">
+        <div class="panel panel-primary author-info">
+            <div class="panel-heading">作者信息</div>
+            <div class="panel-body">
+                <img id="avatar-img" src="{{ post.author.avatar }}" alt="图片加载遇到错误。。" class="img-thumbnail">
+                 <p class="author-name">
+                     用户名：{{ post.author.name }}
+                 </p>
+                <p>加入时间：{{ post.author.join_time }}</p>
+                <p>帖子数量：{{ post.author.posts | length }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+.main-container{
+    width: 990px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.left-container{
+    width: 730px;
+    float: left;
+}
+
+.right-container{
+    width: 250px;
+    float: right;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover{
+    cursor: pointer;
+}

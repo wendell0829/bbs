@@ -1,7 +1,15 @@
 /*
  * Base structure
  */
+.top-box {
+    overflow: hidden;
+    padding: 10px;
+    background: #cbcbc0;
+}
 
+.top-box button {
+    float: right;
+}
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
     padding-top: 50px;

@@ -72,11 +72,11 @@ class CMSUser(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(20), nullable=False)
     _password = db.Column(db.String(200), nullable=False)
-    phone = db.Column(db.String(15), nullable=False, unique=True)
-    email = db.Column(db.String(30), unique=True)
+    phone = db.Column(db.String(15), unique=True)
+    email = db.Column(db.String(30), nullable=False, unique=True)
     join_time = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, name, password, phone, email=None):
+    def __init__(self, name, password, email, phone=None):
         self.name = name
         self.phone = phone
         self.password = password

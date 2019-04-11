@@ -10,12 +10,15 @@ from main import create_app
 from exts import db
 from app.cms import models as cms_models
 from app.front import models as front_models
+from app.common import models as common_models
 
 
 CMSUser = cms_models.CMSUser
 CMSRole = cms_models.CMSRole
 CMSAuthority = cms_models.CMSAuthority
 FrontUser = front_models.FrontUser
+Post = common_models.Post
+Board = common_models.Board
 
 app = create_app()
 
@@ -108,25 +111,43 @@ def add_user_to_role(name, phone):
 
 
 @manager.option('-a', '--authority', dest='authority')
-@manager.option('-ph', '--phone', dest='phone')
-def test_permission(authority, phone):
+@manager.option('-e', '--email', dest='email')
+def test_permission(authority, email):
     '''
     测试某个用户是否拥有某个权限
     :param authority: 权限代码, 需转换为整数
     :param phone:  用户手机号
     :return:
     '''
-    user = db.session.query(CMSUser).filter_by(phone=phone).first()
+    user = db.session.query(CMSUser).filter_by(email=email).first()
     authority = int(authority)
     if user:
         if user.check_authority(authority):
-            print('用户{}拥有权限{}'.format(phone, authority))
+            print('用户{}拥有权限{}'.format(email, authority))
         else:
-            print('用户{}没有权限{}'.format(phone, authority))
+            print('用户{}没有权限{}'.format(email, authority))
     else:
         print('用户不存在!')
 
 
+@manager.option('-t', '--total', dest='total')
+@manager.option('-b', '--board', dest='board_id')
+def add_test_posts(total, board_id):
+    board = Board.query.filter_by(id=board_id).one_or_none()
+    if board:
+        start = Post.query.filter_by(board_id=board_id).count()
+        for i in range(int(start), int(total)):
+            title = '标题：{}'.format(i)
+            content = '这是第{}条帖子'.format(i)
+            author = FrontUser.query.first()
+            post = Post(title=title, content=content)
+            post.board = board
+            post.author = author
+            db.session.add(post)
+            db.session.commit()
+        print('成功向板块{}中添加帖子{}篇！'.format(board.name, total))
+    else:
+        print('板块不存在，请检查板块id！')
 
 if __name__ == '__main__':
     manager.run()

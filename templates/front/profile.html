@@ -1,0 +1,94 @@
+{% extends 'front/base.html' %}
+
+{% block title %}
+    个人信息
+{% endblock %}
+
+{% block head %}
+    <script>
+        $(function () {
+            myqiniu.setUp({
+                'domain': 'http://podxcwazy.bkt.clouddn.com/',
+                'browse_btn': 'avatar-upload-btn',
+                'uptoken_url': '/common/uptoken/',
+                'success': function (up, file, info) {
+                    var image_url = file.name;
+                    var progress_bar = $(".progress");
+                    progress_bar.removeAttr("hidden");
+                    csrf_ajax.post({
+                        'url': '/add_avatar/',
+                        'data': {
+                            'avatar': image_url
+                        },
+                        'success': function (data) {
+                            if (data['code'] === 200) {
+                                myalert.alertSuccess(data['message'],
+                                    function () {
+                                        window.location.reload()
+                                    })
+                            } else {
+                                myalert.alertInfoToast(data['message'])
+                            }
+                        },
+                        'fail': function () {
+                            myalert.alertNetworkError()
+                        }
+                    })
+                }
+            })
+        });
+    </script>
+    <style>
+        .progress{
+            margin-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% set user = current_fuser %}
+    <div class="left-container">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <td>用户名：</td>
+                <td>{{ user.name }}</td>
+            </tr>
+            <tr>
+                <td>性别：</td>
+                <td>{{ user.gender.name }}</td>
+            </tr>
+            <tr>
+                <td>邮箱：</td>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <td>手机：</td>
+                <td>{{ user.mobile }}</td>
+            </tr>
+            <tr>
+                <td>个性签名：</td>
+                <td>
+                    {{ user.signature }}
+                </td>
+            </tr>
+            <tr>
+                <td>加入时间：</td>
+                <td>
+                    {{ user.join_time }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-container">
+        <img id="avatar-img" src="{{ user.avatar }}" alt="图片加载遇到错误。。" class="img-thumbnail">
+        <button id="avatar-upload-btn">上传新头像</button>
+        <div class="progress" hidden="hidden">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                 style="width: 60%;" >
+            60%
+            </div>
+        </div>
+    </div>
+{% endblock %}

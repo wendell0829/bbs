@@ -1,0 +1,22 @@
+<meta charset="UTF-8">
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+{#<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">#}
+{#<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>#}
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>#}
+{#<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>#}
+<script src="{{ url_for('static',filename="common/js/csrf_ajax.js") }}"></script>
+<link rel="stylesheet" href="{{ url_for('static',filename="common/sweetalert/sweetalert.css") }}">
+<script src="{{ url_for('static',filename="common/sweetalert/sweetalert.min.js") }}"></script>
+<script src="{{ url_for('static',filename="common/sweetalert/myalert.js") }}"></script>
+<script src="{{ url_for('static', filename="common/js/myqiniu.js") }}"></script>
+<script src="{{ url_for('static', filename="common/js/qiniu.js") }}"></script>
+<script src="https://cdn.staticfile.org/Plupload/2.1.1/moxie.js"></script>
+<script src="https://cdn.staticfile.org/Plupload/2.1.1/plupload.dev.js"></script>

@@ -38,9 +38,11 @@ var myalert = {
             'title': '提示',
             'text': msg,
             'type': 'success',
-        }
+            'showCancelButton' : false
+        };
         swal(args,confirmCallback);
-    }, 
+    },
+
     /*
         功能：带有标题的成功提示
         参数：
@@ -70,6 +72,40 @@ var myalert = {
             'confirmButtonText': params['confirmText'] ? params['confirmText'] : '确定',
             'cancelButtonText': params['cancelText'] ? params['cancelText'] : '取消',
             'text': params['msg'] ? params['msg'] : ''
+        },function (isConfirm) {
+            if(isConfirm){
+                if(params['confirmCallback']){
+                    params['confirmCallback']();
+                }
+            }else{
+                if(params['cancelCallback']){
+                    params['cancelCallback']();
+                }
+            }
+        });
+    },
+    /*
+        功能：确认提示
+        参数：字典的形式
+            - title：提示框标题（可选）
+            - type：提示框的类型（可选）
+            - confirmText：确认按钮文本（可选）
+            - cancelText：取消按钮文本（可选）
+            - msg：提示框内容（必须）
+            - confirmCallback：确认按钮点击回调（可选）
+            - cancelCallback：取消按钮点击回调（可选）
+    */
+    'alertConfirmTwice':function (params) {
+        swal({
+            title: params['title'] ? params['title'] : '提示',
+            showCancelButton: true,
+            showConfirmButton: true,
+            type: params['type'] ? params['type'] : '',
+            confirmButtonText: params['confirmText'] ? params['confirmText'] : '确定',
+            cancelButtonText: params['cancelText'] ? params['cancelText'] : '取消',
+            text: params['msg'] ? params['msg'] : '',
+            closeOnConfirm: false,
+            closeOnCancel: true
         },function (isConfirm) {
             if(isConfirm){
                 if(params['confirmCallback']){

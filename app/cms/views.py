@@ -4,12 +4,16 @@
 '''
 from flask import Blueprint, render_template, views, redirect, request, url_for, session, g
 from .forms import LoginForm, ResetPwdForm, ResetEmailForm
+from ..common.forms import BannerForm, UpdateBannerForm, BoardForm, UpdateBoardForm
 from .utils import login_check, login_required, update_user, create_captcha_email, authority_required
 import config
 from utils import restful, cache
 from exts import mail
 import logging
-from .models import CMSAuthority
+from .models import CMSAuthority, CMSUser
+from ..common.models import Banner, db, Board, Post, StickyRecord, Comment, LikeRecord
+from flask_paginate import Pagination, get_page_parameter
+
 
 
 bp = Blueprint(name='cms', import_name=__name__, url_prefix='/cms')
@@ -27,7 +31,7 @@ def home():
 @login_required
 def logout():
     # 注销, 即在session中删除登录信息
-    session.pop(config.CURRENT_USER_ID)
+    session.pop(config.CURRENT_CMS_USER_ID)
     return redirect(url_for('cms.login'))
 
 
@@ -74,14 +78,14 @@ class LoginView(views.MethodView):
     def post(self):
         form = LoginForm(request.form)
         if form.validate():
-            phone = form.phone.data
+            email = form.email.data
             password = form.password.data
             remember = form.remember.data
-            message, current_user = login_check(phone, password)
+            message, current_user = login_check(email, password)
             if message:
                 return self.get(message=message)
             else:
-                session[config.CURRENT_USER_ID] = current_user.id
+                session[config.CURRENT_CMS_USER_ID] = current_user.id
                 if remember:
                     session.permanent = True
                 return redirect(url_for('cms.home'))
@@ -104,7 +108,7 @@ class ResetPwdView(views.MethodView):
         if form.validate():
             oldpwd = form.oldpwd.data
             newpwd = form.newpwd.data
-            current_user = g.user
+            current_user = g.cuser
             if current_user.check_password(oldpwd):
                 update_user(user=current_user, password=newpwd)
                 return restful.success()
@@ -127,7 +131,7 @@ class ResetEmailView(views.MethodView):
         form = ResetEmailForm(request.form)
         if form.validate():
             email = form.email.data
-            user = g.user
+            user = g.cuser
             update_user(user=user, email=email)
             return restful.success('邮箱修改成功！')
         else:
@@ -138,7 +142,57 @@ class ResetEmailView(views.MethodView):
 @login_required
 @authority_required(CMSAuthority.POSTER)
 def posts():
-    return render_template('cms/posts.html')
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    start = (page - 1) * config.PER_PAGE
+    end = start + config.PER_PAGE
+    query_obj = Post.query.order_by(Post.create_time.desc())
+    _posts = query_obj.slice(start, end)
+    total = query_obj.count()
+    pagination = Pagination(bs_version=3, page=page, total=total, outer_window=0, inner_window=2)
+    return render_template('cms/posts.html', posts=_posts, pagination=pagination)
+
+
+@bp.route('/delete_post/', methods=['POST'])
+@login_required
+@authority_required(CMSAuthority.POSTER)
+def delete_post():
+    post_id = request.form.get('post_id')
+    if not post_id:
+        return restful.params_error('参数错误，请稍后重试或联系管理员！')
+
+    post = Post.query.get(post_id)
+    if not post:
+        return restful.params_error('帖子不存在！')
+
+    db.session.delete(post)
+    db.session.commit()
+    return restful.success('帖子删除成功！')
+
+
+@bp.route('/stick_post/', methods=['POST'])
+@login_required
+@authority_required(CMSAuthority.POSTER)
+def stick_post():
+    post_id = request.form.get('post_id')
+    to_do = request.form.get('to_do')
+    if not post_id:
+        return restful.params_error('参数错误，请稍后重试或联系管理员！')
+
+    post = Post.query.get(post_id)
+    if not post:
+        return restful.params_error('帖子不存在！')
+    if to_do == '1':
+        sticky = StickyRecord()
+        sticky.operator = g.cuser
+        sticky.post = post
+        db.session.add(sticky)
+    elif to_do == '0':
+        sticky = StickyRecord.query.filter_by(post_id=post_id).one()
+        db.session.delete(sticky)
+    else:
+        return restful.params_error('参数错误，请稍后重试或联系管理员！')
+    db.session.commit()
+    return restful.success('操作成功！')
 
 
 @bp.route('/comments/')
@@ -152,35 +206,152 @@ def comments():
 @login_required
 @authority_required(CMSAuthority.BOARDER)
 def boards():
-    return  render_template('cms/boards.html')
+    _boards = Board.query.order_by(Board.create_time.desc()).all()
+    return render_template('cms/boards.html', boards=_boards)
+
+
+@bp.route('/add_board/', methods=['POST'])
+@login_required
+@authority_required(CMSAuthority.BOARDER)
+def add_board():
+    form = BoardForm(request.form)
+    if form.validate():
+        name = form.name.data
+        moderator_email = form.moderator_email.data
+        moderator = CMSUser.query.filter_by(email=moderator_email).one()
+        desc = form.desc.data
+        board = Board(name=name, desc=desc, moderator=moderator, cms_user_id=moderator.id)
+
+        db.session.add(board)
+        db.session.commit()
+        return restful.success(message='板块添加成功!')
+    else:
+        error = form.get_error()
+        return restful.params_error(message=error)
+
+
+@bp.route('/delete_board/', methods=['POST'])
+@login_required
+@authority_required(CMSAuthority.BOARDER)
+def delete_board():
+    try:
+        board_id = request.form.get('board_id')
+        board = Board.query.filter_by(id=board_id).one_or_none()
+        db.session.delete(board)
+        db.session.commit()
+        return restful.success(message='该版块已被删除！')
+    except:
+        return restful.params_error(message='删除失败，请稍后再试或联系管理员！')
+
+
+@bp.route('/update_board/', methods=['POST'])
+@login_required
+@authority_required(CMSAuthority.BOARDER)
+def update_board():
+    form = UpdateBoardForm(request.form)
+    if form.validate():
+        board_id = form.board_id.data
+        moderator_email = form.moderator_email.data
+        moderator = CMSUser.query.filter_by(email=moderator_email).one()
+        board = Board.query.filter_by(id=board_id).one()
+        board.name = form.name.data
+        board.moderator = moderator
+        board.cms_user_id = moderator.id
+        board.desc = form.desc.data
+
+        db.session.commit()
+        return restful.success(message='修改成功！')
+    else:
+        return restful.params_error(message=form.get_error())
 
 
 @bp.route('/fusers/')
 @login_required
 @authority_required(CMSAuthority.FRONTUSER)
 def fusers():
-    return  render_template('cms/fusers.html')
+    return render_template('cms/fusers.html')
 
 
 @bp.route('/froles/')
 @login_required
 @authority_required(CMSAuthority.FRONTUSER)
 def froles():
-    return  render_template('cms/froles.html')
+    return render_template('cms/froles.html')
 
 
 @bp.route('/cusers/')
 @login_required
 @authority_required(CMSAuthority.CMSUSER)
 def cusers():
-    return  render_template('cms/cusers.html')
+    return render_template('cms/cusers.html')
 
 
 @bp.route('/croles/')
 @login_required
 @authority_required(CMSAuthority.CMSUSER)
 def croles():
-    return  render_template('cms/croles.html')
+    return render_template('cms/croles.html')
+
+
+@bp.route('/banners/')
+@login_required
+@authority_required(CMSAuthority.POSTER)
+def banners():
+    _banners = Banner.query.order_by(Banner.create_time.desc()).all()
+    return render_template('cms/banners.html', banners=_banners)
+
+
+@bp.route('/add_banner/', methods=['POST'])
+@login_required
+@authority_required(CMSAuthority.POSTER)
+def add_banner():
+    form = BannerForm(request.form)
+    if form.validate():
+        name = form.name.data
+        img_url = form.img_url.data
+        link_url = form.link_url.data
+        priority = form.priority.data
+        banner = Banner(name=name, img_url=img_url, link_url=link_url, priority=priority)
+
+        g.cuser.banners.append(banner)
+        db.session.commit()
+        return restful.success(message='{}添加轮播图成功'.format(g.cuser.name))
+    else:
+        error = form.get_error()
+        return restful.params_error(message=error)
+
+
+@bp.route('/delete_banner/', methods=['POST'])
+@login_required
+@authority_required(CMSAuthority.POSTER)
+def delete_banner():
+    try:
+        banner_id = request.form.get('banner_id')
+        banner = Banner.query.filter_by(id=banner_id).one_or_none()
+        db.session.delete(banner)
+        db.session.commit()
+        return restful.success(message='该轮播图已被删除！')
+    except:
+        return restful.params_error(message='删除失败，请稍后再试或联系管理员！')
+
+
+@bp.route('/update_banner/', methods=['POST'])
+@login_required
+@authority_required(CMSAuthority.POSTER)
+def update_banner():
+    form = UpdateBannerForm(request.form)
+    if form.validate():
+        banner_id = form.banner_id.data
+        banner = Banner.query.filter_by(id=banner_id).one()
+        banner.name = form.name.data
+        banner.img_url = form.img_url.data
+        banner.link_url = form.link_url.data
+        banner.priority = form.priority.data
+        banner.creater = g.cuser
+        db.session.commit()
+        return restful.success(message='修改成功！')
+    else:
+        return restful.params_error(message=form.get_error())
 
 
 bp.add_url_rule('/login/', view_func=LoginView.as_view('login'))

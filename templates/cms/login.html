@@ -1,4 +1,5 @@
 {% from "common/macros.html" import static  %}
+{% include "common/_heads.html" %}
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -32,7 +33,7 @@
         <h2 class="form-signin-heading">请登录</h2>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="inputEmail" class="sr-only">用户名</label>
-        <input type="text" id="inputPhone" class="form-control" placeholder="手机号码" name="phone"  autofocus>
+        <input type="text" id="inputPhone" class="form-control" placeholder="邮箱" name="email"  autofocus>
         <label for="inputPassword" class="sr-only" >密码</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="密码" name="password" >
         <div class="checkbox">
@@ -42,12 +43,7 @@
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
     </form>
-    <div style="text-align: center">
-        <span>
-            <a href="#">忘记密码？</a>
-            <a href="#">还没有账号？</a>
-        </span>
-    </div>
+
 
     {% if message %}
         <p style="text-align: center" class="message">{{ message }}</p>

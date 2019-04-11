@@ -31,3 +31,52 @@
 删除：无
 
 
+7.28f0
+创建：banner表
+更改：无
+删除：无
+
+8.ee42
+创建：banner.priority字段
+更改：无
+删除：无
+
+9.9ab7
+创建：banner.priority字段
+更改：无
+删除：无
+
+10.84f4
+创建：board表  post表
+更改：无
+删除：无
+
+11.1d1b
+创建：无
+更改：board.creat_time  -->  board.create_time
+删除：无
+
+12.45ff
+创建：board.desc
+更改：无
+删除：无
+
+13.alde
+创建：无
+更改：front_user.username --> front_user.name
+删除：无
+
+14.aa2d
+创建：comment表
+更改：无
+删除：无
+
+15.0f5e
+创建：无
+更改：front_user.avatar(string(50))  --> front_user.avatar(string(150))
+删除：无
+
+16.a2ea
+创建：stiky_record表  like_record表
+更改：无
+删除：无

@@ -1,0 +1,53 @@
+{% extends 'front/signbase.html' %}
+
+{% block title %}
+wendell论坛登录
+{% endblock %}
+
+{% block heads %}
+    <script src="{{ static("front/js/signin.js") }}"></script>
+    {% if onlogin and (not message) %}
+        <script>
+            alert('请先登录！')
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block h2_title %}
+wendell论坛登录页面
+{% endblock %}
+
+{% block signbox %}
+    <div class="form-box">
+    <div class="form-group">
+        <input class="form-control" type="text" id="mobile" name="mobile" placeholder="手机号">
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="password" id="password" name="password" placeholder="密码">
+    </div>
+    <div class="form-group">
+        <div class="input-group">
+            <input class="form-control" type="text" id="img-captcha" name="img_captcha" placeholder="验证码">
+            <span id="img-captcha-btn" class="input-group-addon img-captcha-addon">
+                <img id="img-captcha-img" class="img-captcha-img" src="{{ url_for('common.graph_captcha') }}" alt="">
+            </span>
+        </div>
+    </div>
+    <div class="checkbox">
+        <lable>
+            <input type="checkbox" value=1 name="remember">记住密码
+        </lable>
+    </div>
+    <div class="form-group">
+        <div class="input-group">
+            <button id="submit-btn" class="btn btn-warning ">立即登录</button>
+            <a class="signup-btn btn btn-warning" href="{{ url_for('front.signup') }}">还没有账号?去注册!</a>
+        </div>
+    </div>
+    <div hidden="hidden" disabled="disabled">
+        <span id="return-to">{{ return_to }}</span>
+    </div>
+</div>
+{% endblock %}
+
+

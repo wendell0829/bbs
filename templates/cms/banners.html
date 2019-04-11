@@ -1,0 +1,100 @@
+{% extends 'cms/base.html' %}
+
+{% block title %}
+    轮播图管理界面
+{% endblock %}
+
+{% block page_title %}
+    {{ self.title() }}
+{% endblock %}
+
+{% block head %}
+    <script src="{{ static("cms/js/banner.js") }}"></script>
+{% endblock %}
+
+{% block main_content %}
+    <div class="top-box">
+        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#BannerModal">添加轮播图</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="BannerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">轮播图管理</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" style="padding: 10px">
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-3 control-label">名称：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="name" placeholder="图片名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-3 control-label">图片链接：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="img_url" placeholder="图片链接">
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-default" id="img-upload-btn">选择图片</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-3 control-label">跳转链接：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="link_url" placeholder="跳转链接">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-3 control-label">优先级：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="priority" placeholder="优先级">
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary " id="save_btn">保存</button>
+                    <button type="button" class="btn btn-default " data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>图片名称</th>
+            <th>图片链接</th>
+            <th>跳转链接</th>
+            <th>优先级</th>
+            <th>创建人</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for banner in banners %}
+            <tr data-id="{{ banner.id }}" data-name="{{ banner.name }}" data-img_url="{{ banner.img_url }}"
+                data-link_url="{{ banner.link_url }}" data-priority="{{ banner.priority }}">
+                <td>{{ loop.index }}</td>
+                <td>{{ banner.name }}</td>
+                <td><a href="{{ banner.img_url }}" target="_blank">{{ banner.img_url }}</a></td>
+                <td><a href="{{ banner.link_url }}" target="_blank">{{ banner.link_url }}</a></td>
+                <td>{{ banner.priority }}</td>
+                <td>{{ banner.creater.name }}</td>
+                <td>
+                    <button class="btn btn-warning btn-xs edit-btn">编辑</button>
+                    <button class="btn btn-danger btn-xs delete-btn">删除</button>
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}
+

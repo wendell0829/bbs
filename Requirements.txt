@@ -32,7 +32,7 @@ Mako==1.0.7
 MarkupSafe==1.1.0
 matplotlib==3.0.2
 mysql-connector-python==8.0.13
-numpy==1.15.4
+numpy==1.22.0
 pandas==0.23.4
 parsel==1.5.1
 Pillow==5.3.0
